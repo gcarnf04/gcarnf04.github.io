@@ -159,6 +159,40 @@
             border-top: 1px solid var(--border-color);
             width: 100%;
         }
+        /* ── INTERSTITIAL AD ── */
+        .interstitial-backdrop {
+            position: fixed; inset: 0;
+            background: var(--bg-body);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .interstitial-content {
+            width: 100%;
+            max-width: 500px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+        }
+        .interstitial-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .interstitial-countdown {
+            color: var(--accent);
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -209,5 +243,75 @@
         <p>&copy; 2025 - Procesamiento 100% en el navegador.</p>
     </footer>
 
+    <!-- Interstitial Ad -->
+    <div class="interstitial-backdrop" id="interstitialAd" style="display: none;">
+        <div class="interstitial-content">
+            <div class="interstitial-header">
+                <span>Publicidad</span>
+                <span class="interstitial-countdown" id="adCountdown">5</span>
+            </div>
+            <div class="interstitial-body">
+                <div style="width: 100%; height: 250px; background: #111827; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #94a3b8; font-size: 13px; border: 1px dashed #1e2d3d;">
+                    <!-- INSERTA AQUÍ TU SCRIPT DE GOOGLE ADSENSE -->
+                    [Espacio para anuncio de pantalla completa]
+                </div>
+            </div>
+            <button class="app-card-btn" id="btnSkipAd" disabled style="background-color: #1e2a3a; color: #64748b; cursor: not-allowed; margin-top: 16px;">Saltar Anuncio</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btns = document.querySelectorAll('.app-card-btn');
+            const interstitial = document.getElementById('interstitialAd');
+            const countdownEl = document.getElementById('adCountdown');
+            const skipBtn = document.getElementById('btnSkipAd');
+            let targetUrl = '';
+
+            btns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const href = btn.getAttribute('href');
+                    if (href && href !== '#') {
+                        e.preventDefault();
+                        targetUrl = href;
+                        showInterstitial();
+                    }
+                });
+            });
+
+            function showInterstitial() {
+                interstitial.style.display = 'flex';
+                let timeLeft = 5;
+                countdownEl.textContent = timeLeft;
+                skipBtn.textContent = `Saltar Anuncio en ${timeLeft}s`;
+                skipBtn.disabled = true;
+                skipBtn.style.backgroundColor = '#1e2a3a';
+                skipBtn.style.color = '#64748b';
+                skipBtn.style.cursor = 'not-allowed';
+
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft > 0) {
+                        countdownEl.textContent = timeLeft;
+                        skipBtn.textContent = `Saltar Anuncio en ${timeLeft}s`;
+                    } else {
+                        clearInterval(timer);
+                        countdownEl.textContent = '';
+                        skipBtn.textContent = 'Continuar';
+                        skipBtn.disabled = false;
+                        skipBtn.style.backgroundColor = 'var(--accent)';
+                        skipBtn.style.color = 'var(--bg-body)';
+                        skipBtn.style.cursor = 'pointer';
+                    }
+                }, 1000);
+            }
+
+            skipBtn.addEventListener('click', () => {
+                if (!skipBtn.disabled && targetUrl) {
+                    window.location.href = targetUrl;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
