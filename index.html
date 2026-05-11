@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas de IA & Datos</title>
+    
+    <!-- INSERTA AQUÍ TU SCRIPT DE GOOGLE ADSENSE -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2977545376736575" crossorigin="anonymous"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #0a0d14;
+            --bg-card: #111827;
+            --bg-card-hover: #1e2a3a;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #00d4ff;
+            --border-color: #1e2d3d;
+            --radius: 12px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 0 24px;
+            margin: 0 auto;
+        }
+
+        /* ── HERO SECTION ── */
+        .hero {
+            text-align: center;
+            padding: 80px 0 64px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ── GRID SECTION ── */
+        .apps-section {
+            width: 100%;
+            padding-bottom: 80px;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* ── CARDS ── */
+        .app-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .app-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 212, 255, 0.4);
+            background-color: var(--bg-card-hover);
+            box-shadow: 0 12px 32px -12px rgba(0, 212, 255, 0.15);
+        }
+
+        .app-card-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .app-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .app-card-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .app-card-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background-color: var(--accent);
+            color: var(--bg-body);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 10px 16px;
+            border-radius: 6px;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .app-card-btn:hover {
+            background-color: #33dbff;
+            transform: translateY(-1px);
+        }
+        
+        /* ── FOOTER ── */
+        .footer {
+            margin-top: auto;
+            padding: 24px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Herramientas de <span>IA & Datos</span></h1>
+            <p>Una colección de aplicaciones web para el procesamiento local. Rápidas, seguras y sin servidores.</p>
+        </section>
+
+        <!-- Apps Grid -->
+        <section class="apps-section">
+            <div class="apps-grid">
+                
+                <!-- Tarjeta 1: Data Gut Check -->
+                <article class="app-card">
+                    <div class="app-card-icon">
+                        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                            <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="14" cy="14" r="2.5" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h2 class="app-card-title">Data Gut Check</h2>
+                    <p class="app-card-desc">Sube un CSV y detecta en segundos si tus datos huelen mal. Procesamiento local y privado.</p>
+                    <a href="https://gcarnf04.github.io/csv_analisis/" class="app-card-btn">Abrir herramienta</a>
+                </article>
+
+                <!-- EJEMPLO DE CÓMO AÑADIR UNA NUEVA TARJETA EN EL FUTURO -->
+                <!--
+                <article class="app-card">
+                    <div class="app-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                    <h2 class="app-card-title">Nueva Herramienta</h2>
+                    <p class="app-card-desc">Descripción breve y directa de lo que hace tu nueva aplicación y por qué es útil.</p>
+                    <a href="#" class="app-card-btn">Abrir herramienta</a>
+                </article>
+                -->
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 - Procesamiento 100% en el navegador.</p>
+    </footer>
+
+</body>
+</html>
