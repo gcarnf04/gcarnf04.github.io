@@ -193,6 +193,29 @@
             font-family: monospace;
             font-size: 1rem;
         }
+
+        /* ── MODALS ── */
+        .modal-backdrop {
+            position: fixed; inset: 0; background: rgba(10,13,20,0.8); backdrop-filter: blur(4px);
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+        }
+        .modal {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius); padding: 32px; max-width: 400px; width: 100%; position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 16px; right: 16px; background: none; border: none;
+            color: var(--text-muted); font-size: 1.2rem; cursor: pointer;
+        }
+        .input-field {
+            width: 100%; padding: 12px; background: var(--bg-body); border: 1px solid var(--border-color);
+            border-radius: 8px; color: var(--text-main); font-family: monospace; margin-bottom: 16px;
+        }
+        .pin-inputs { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
+        .pin-input {
+            width: 48px; height: 56px; text-align: center; font-size: 24px;
+            background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 8px; color: white;
+        }
     </style>
 </head>
 <body>
@@ -235,6 +258,18 @@
                     <a href="https://gcarnf04.github.io/trade_scorer/" class="app-card-btn">Open Tool</a>
                 </article>
 
+                <!-- Tarjeta 3: Global Vault -->
+                <article class="app-card" style="border-color: rgba(0, 212, 255, 0.4);">
+                    <div class="app-card-icon" style="color: #22c55e; background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <h2 class="app-card-title">Global API Key Vault</h2>
+                    <p class="app-card-desc" id="vaultStatusText">Store your Gemini Key here securely with a PIN. It will be automatically shared across all tools.</p>
+                    <button id="btnOpenVault" class="app-card-btn" style="background-color: #22c55e; color: #0a0d14;">Set up Key</button>
+                </article>
+
             </div>
         </section>
     </main>
@@ -260,6 +295,44 @@
         </div>
     </div>
 
+    <!-- Modals para el Vault -->
+    <div class="modal-backdrop" id="setupModal" style="display: none;">
+      <div class="modal">
+        <button class="modal-close" id="btnCloseSetup">✕</button>
+        <h2 style="margin-bottom:8px">Set up Global Key</h2>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">Your Gemini Key will be encrypted with a PIN and shared across all tools.</p>
+        <input type="password" id="modalApiKeyInput" class="input-field" placeholder="AIzaSy… (Gemini API Key)" autocomplete="off"/>
+        <div style="text-align:center; font-size:13px; color:var(--text-muted); margin-bottom:8px;">Create a 4-digit PIN</div>
+        <div class="pin-inputs" id="setupPinInputs">
+          <input class="pin-input" type="text" inputmode="numeric" maxlength="1"/>
+          <input class="pin-input" type="text" inputmode="numeric" maxlength="1"/>
+          <input class="pin-input" type="text" inputmode="numeric" maxlength="1"/>
+          <input class="pin-input" type="text" inputmode="numeric" maxlength="1"/>
+        </div>
+        <div id="setupError" style="color:#ef4444; font-size:13px; text-align:center; min-height:18px; margin-bottom:16px;"></div>
+        <button class="app-card-btn" id="btnSaveKey">Save & Activate</button>
+        <button class="app-card-btn" id="btnClearKey" style="background:var(--bg-body); color:var(--text-muted); margin-top:8px; display:none;">Delete Saved Key</button>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="loginModal" style="display: none;">
+      <div class="modal" style="text-align:center;">
+        <button class="modal-close" id="btnCloseLogin">✕</button>
+        <h2 style="margin-bottom:8px">Enter your PIN</h2>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">Unlock your Global API Key.</p>
+        <div class="pin-inputs" id="loginPinInputs">
+          <input class="pin-input" type="text" inputmode="numeric" maxlength="1"/>
+          <input class="pin-input" type="text" inputmode="numeric" maxlength="1"/>
+          <input class="pin-input" type="text" inputmode="numeric" maxlength="1"/>
+          <input class="pin-input" type="text" inputmode="numeric" maxlength="1"/>
+        </div>
+        <div id="loginError" style="color:#ef4444; font-size:13px; min-height:18px; margin-bottom:16px;"></div>
+        <button class="app-card-btn" id="btnUnlock">Unlock</button>
+      </div>
+    </div>
+
+    <script src="js/crypto-js.min.js"></script>
+    <script src="js/vault.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const btns = document.querySelectorAll('.app-card-btn');
@@ -311,6 +384,104 @@
                     window.location.href = targetUrl;
                 }
             });
+
+            /* ── VAULT LOGIC ── */
+            const btnOpenVault = document.getElementById('btnOpenVault');
+            const setupModal = document.getElementById('setupModal');
+            const loginModal = document.getElementById('loginModal');
+            const vaultStatusText = document.getElementById('vaultStatusText');
+            const apiKeyInput = document.getElementById('modalApiKeyInput');
+            const setupError = document.getElementById('setupError');
+            const loginError = document.getElementById('loginError');
+            const btnClearKey = document.getElementById('btnClearKey');
+
+            const setupPins = [...document.querySelectorAll('#setupPinInputs .pin-input')];
+            const loginPins = [...document.querySelectorAll('#loginPinInputs .pin-input')];
+
+            function initPinInputs(inputs) {
+                inputs.forEach((inp, i) => {
+                    inp.addEventListener('input', () => {
+                        inp.value = inp.value.replace(/\D/g, '').slice(-1);
+                        if (inp.value && i < inputs.length - 1) inputs[i + 1].focus();
+                    });
+                    inp.addEventListener('keydown', e => {
+                        if (e.key === 'Backspace' && !inp.value && i > 0) inputs[i - 1].focus();
+                    });
+                });
+            }
+            initPinInputs(setupPins);
+            initPinInputs(loginPins);
+
+            function updateVaultUI() {
+                if (Vault.isUnlocked()) {
+                    vaultStatusText.textContent = "Your key is currently loaded and unlocked for this session.";
+                    btnOpenVault.textContent = "Change Key";
+                    btnClearKey.style.display = 'block';
+                } else if (Vault.hasStoredKey()) {
+                    vaultStatusText.textContent = "You have a key saved securely. Click to unlock it.";
+                    btnOpenVault.textContent = "Unlock Key";
+                    btnClearKey.style.display = 'block';
+                } else {
+                    vaultStatusText.textContent = "Store your Gemini Key here securely with a PIN. It will be automatically shared across all tools.";
+                    btnOpenVault.textContent = "Set up Key";
+                    btnClearKey.style.display = 'none';
+                }
+            }
+
+            btnOpenVault.addEventListener('click', () => {
+                if (Vault.hasStoredKey() && !Vault.isUnlocked()) {
+                    loginModal.style.display = 'flex';
+                    loginError.textContent = '';
+                    loginPins.forEach(p => p.value = '');
+                    setTimeout(() => loginPins[0].focus(), 50);
+                } else {
+                    setupModal.style.display = 'flex';
+                    setupError.textContent = '';
+                    setupPins.forEach(p => p.value = '');
+                    apiKeyInput.value = '';
+                    setTimeout(() => apiKeyInput.focus(), 50);
+                }
+            });
+
+            document.getElementById('btnCloseSetup').onclick = () => setupModal.style.display = 'none';
+            document.getElementById('btnCloseLogin').onclick = () => loginModal.style.display = 'none';
+
+            document.getElementById('btnSaveKey').addEventListener('click', () => {
+                const key = apiKeyInput.value.trim();
+                const pin = setupPins.map(p => p.value).join('');
+                if (!key.startsWith('AIza') || key.length < 30) { setupError.textContent = 'Invalid Gemini Key format.'; return; }
+                if (pin.length !== 4) { setupError.textContent = 'Enter a 4-digit PIN.'; return; }
+                
+                if (Vault.saveKey(key, pin)) {
+                    setupModal.style.display = 'none';
+                    updateVaultUI();
+                } else {
+                    setupError.textContent = 'Failed to encrypt key.';
+                }
+            });
+
+            document.getElementById('btnUnlock').addEventListener('click', () => {
+                const pin = loginPins.map(p => p.value).join('');
+                if (pin.length !== 4) { loginError.textContent = 'Incomplete PIN.'; return; }
+                
+                const key = Vault.loadKey(pin);
+                if (key) {
+                    loginModal.style.display = 'none';
+                    updateVaultUI();
+                } else {
+                    loginError.textContent = 'Incorrect PIN.';
+                }
+            });
+
+            btnClearKey.addEventListener('click', () => {
+                if (confirm('Delete saved key? You will have to re-enter it.')) {
+                    Vault.clearKey();
+                    setupModal.style.display = 'none';
+                    updateVaultUI();
+                }
+            });
+
+            updateVaultUI();
         });
     </script>
 </body>
