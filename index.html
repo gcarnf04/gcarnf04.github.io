@@ -160,39 +160,111 @@
             border-top: 1px solid var(--border-color);
             width: 100%;
         }
-        /* ── INTERSTITIAL AD ── */
-        .interstitial-backdrop {
-            position: fixed; inset: 0;
-            background: var(--bg-body);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.2s ease;
+        /* ── FAQ ACCORDION & RICH CONTENT ── */
+        .rich-section {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .interstitial-content {
-            width: 100%;
-            max-width: 500px;
-            padding: 24px;
+        .rich-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .faq-grid {
+            max-width: 800px;
+            margin: 0 auto 48px;
             display: flex;
             flex-direction: column;
             gap: 16px;
-            text-align: center;
         }
-        .interstitial-header {
+        .faq-item {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .faq-item:hover {
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+        .faq-trigger {
+            display: none;
+        }
+        .faq-label {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .interstitial-countdown {
-            color: var(--accent);
+            align-items: center;
+            padding: 18px 24px;
             font-weight: 600;
-            font-family: monospace;
-            font-size: 1rem;
+            cursor: pointer;
+            user-select: none;
+            color: var(--text-main);
+        }
+        .faq-label::after {
+            content: '+';
+            font-size: 1.2rem;
+            color: var(--accent);
+            transition: var(--transition);
+        }
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 24px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
+        }
+        .faq-trigger:checked ~ .faq-content {
+            max-height: 1000px;
+            padding: 0 24px 20px;
+            transition: max-height 0.3s cubic-bezier(1, 0, 1, 0), padding 0.3s ease;
+        }
+        .faq-trigger:checked ~ .faq-label::after {
+            content: '−';
+            transform: rotate(180deg);
+        }
+
+        .edu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+        @media (max-width: 768px) {
+            .edu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .edu-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+        }
+        .edu-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+        .edu-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .edu-card ul {
+            padding-left: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .edu-card ul li {
+            margin-bottom: 6px;
         }
 
         /* ── MODALS ── */
@@ -286,28 +358,95 @@
 
             </div>
         </section>
+        <!-- ── DETAILED HOW IT WORKS ── -->
+        <section class="rich-section">
+            <h2>How It Works</h2>
+            <div class="edu-grid">
+                <div class="edu-card">
+                    <h3>1. Configure Your API Key</h3>
+                    <p>Provide your private Gemini API Key via our secure BYOK (Bring Your Own Key) Vault. All communication happens strictly between your browser and Google's servers. Your key is stored encrypted locally using AES-256 with a 4-digit PIN.</p>
+                </div>
+                <div class="edu-card">
+                    <h3>2. Run Local Diagnostics</h3>
+                    <p>Load your data files (such as broker transaction logs or dataset CSVs) directly into the browser. The tools calculate statistics, check for anomalies, and clean your data on your local device—absolutely zero server uploads.</p>
+                </div>
+                <div class="edu-card">
+                    <h3>3. AI Synthesis & Auditing</h3>
+                    <p>Only ~500 tokens of statistical aggregates and metadata are sent to the LLM model to compile a comprehensive, objective diagnostic. You receive a rigorous, highly-customized analysis in seconds.</p>
+                </div>
+                <div class="edu-card">
+                    <h3>4. Systematic Improvement</h3>
+                    <p>Detect statistical errors, improve data pipeline cleanlines, identify hidden cognitive biases (like FOMO, overtrading, or revenge trading), and track your progress over time with our built-in local history journal.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── EDUCATIONAL ARTICLES ── -->
+        <section class="rich-section">
+            <h2>Educational Center</h2>
+            <div class="edu-grid">
+                <div class="edu-card">
+                    <h3>Trading Psychology & Risk Management</h3>
+                    <p>Emotional stability is the cornerstone of professional trading. Research indicates that over 90% of retail traders fail due to emotional biases rather than market dynamics. Main cognitive biases include:</p>
+                    <ul>
+                        <li><strong>FOMO (Fear Of Missing Out):</strong> Entering trades without setup confluence because of a fast-moving price.</li>
+                        <li><strong>Revenge Trading:</strong> Attempting to recoup losses by immediately entering larger, unplanned positions.</li>
+                        <li><strong>Overtrading:</strong> Over-allocating capital or placing too many trades, leading to elevated transaction fees and mental fatigue.</li>
+                    </ul>
+                </div>
+                <div class="edu-card">
+                    <h3>Data Quality & Machine Learning Readiness</h3>
+                    <p>High-quality data is indispensable for predictive modeling. Prior to feeding datasets into machine learning algorithms, engineers must undergo extensive clean-up checks:</p>
+                    <ul>
+                        <li><strong>Null & Missing Values:</strong> Handled by imputation (mean, median, mode) or line deletion to prevent model bias.</li>
+                        <li><strong>Statistical Outliers:</strong> Identified via Z-Score or IQR methods to avoid skewing regression coefficients.</li>
+                        <li><strong>Feature Correlation:</strong> High multicollinearity can distort model interpretability. Correlation matrices are essential.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── FAQS ── -->
+        <section class="rich-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <input type="checkbox" id="faq1" class="faq-trigger">
+                    <label for="faq1" class="faq-label">Is my Gemini API Key safe here?</label>
+                    <div class="faq-content">
+                        <p>Yes. The API key is stored strictly on your local device. We use CryptoJS to encrypt the key with AES-256 using a 4-digit PIN that you create. The key only leaves your browser when sending requests directly to Google's official API endpoint. We have no backend databases and never collect your keys or information.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <input type="checkbox" id="faq2" class="faq-trigger">
+                    <label for="faq2" class="faq-label">Why is my raw data never uploaded?</label>
+                    <div class="faq-content">
+                        <p>Our applications utilize client-side JS libraries (like PapaParse for CSVs) to perform all mathematical and structural analyses on your computer. When you click "Run AI Diagnosis", our script only sends aggregated mathematical metadata (e.g. win/loss counts, column names, null percentages) to the AI, ensuring your raw sensitive records never leave your local browser session.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <input type="checkbox" id="faq3" class="faq-trigger">
+                    <label for="faq3" class="faq-label">Is this service completely free?</label>
+                    <div class="faq-content">
+                        <p>Absolutely. We operate under a BYOK (Bring Your Own Key) model. Google AI Studio offers a generous free-tier API key that is perfect for personal use. By providing your own key, you pay nothing, and we support the development and hosting costs of these tools entirely through display advertisements.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="footer">
-        <p>&copy; 2025 - 100% In-browser Processing.</p>
+        <p>&copy; 2026 AI & Data Tools - Local & Secure Client-side Processing.</p>
+        <p style="margin-top: 12px; display: flex; justify-content: center; gap: 16px; font-size: 0.8rem;">
+            <a href="privacy.html" style="color: var(--text-muted); text-decoration: none;">Privacy Policy</a>
+            <span>•</span>
+            <a href="terms.html" style="color: var(--text-muted); text-decoration: none;">Terms of Use</a>
+            <span>•</span>
+            <a href="about.html" style="color: var(--text-muted); text-decoration: none;">About Us & Contact</a>
+        </p>
     </footer>
-
-    <!-- Interstitial Ad -->
-    <div class="interstitial-backdrop" id="interstitialAd" style="display: none;">
-        <div class="interstitial-content">
-            <div class="interstitial-header">
-                <span>Advertisement</span>
-                <span class="interstitial-countdown" id="adCountdown">5</span>
-            </div>
-            <div class="interstitial-body">
-                <div style="width: 100%; height: 250px; background: #111827; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #94a3b8; font-size: 13px; border: 1px dashed #1e2d3d;">
-                    <!-- INSERTA AQUÍ TU SCRIPT DE GOOGLE ADSENSE -->
-                    [Full screen ad space]
-                </div>
-            </div>
-            <button class="app-card-btn" id="btnSkipAd" disabled style="background-color: #1e2a3a; color: #64748b; cursor: not-allowed; margin-top: 16px;">Skip Ad</button>
-        </div>
-    </div>
 
     <!-- Modals para el Vault -->
     <div class="modal-backdrop" id="setupModal" style="display: none;">
@@ -349,56 +488,6 @@
     <script src="js/vault.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const btns = document.querySelectorAll('.app-card-btn');
-            const interstitial = document.getElementById('interstitialAd');
-            const countdownEl = document.getElementById('adCountdown');
-            const skipBtn = document.getElementById('btnSkipAd');
-            let targetUrl = '';
-
-            btns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const href = btn.getAttribute('href');
-                    if (href && href !== '#') {
-                        e.preventDefault();
-                        targetUrl = href;
-                        showInterstitial();
-                    }
-                });
-            });
-
-            function showInterstitial() {
-                interstitial.style.display = 'flex';
-                let timeLeft = 5;
-                countdownEl.textContent = timeLeft;
-                skipBtn.textContent = `Skip Ad in ${timeLeft}s`;
-                skipBtn.disabled = true;
-                skipBtn.style.backgroundColor = '#1e2a3a';
-                skipBtn.style.color = '#64748b';
-                skipBtn.style.cursor = 'not-allowed';
-
-                const timer = setInterval(() => {
-                    timeLeft--;
-                    if (timeLeft > 0) {
-                        countdownEl.textContent = timeLeft;
-                        skipBtn.textContent = `Skip Ad in ${timeLeft}s`;
-                    } else {
-                        clearInterval(timer);
-                        countdownEl.textContent = '';
-                        skipBtn.textContent = 'Continue';
-                        skipBtn.disabled = false;
-                        skipBtn.style.backgroundColor = 'var(--accent)';
-                        skipBtn.style.color = 'var(--bg-body)';
-                        skipBtn.style.cursor = 'pointer';
-                    }
-                }, 1000);
-            }
-
-            skipBtn.addEventListener('click', () => {
-                if (!skipBtn.disabled && targetUrl) {
-                    window.location.href = targetUrl;
-                }
-            });
-
             /* ── VAULT LOGIC ── */
             const btnOpenVault = document.getElementById('btnOpenVault');
             const setupModal = document.getElementById('setupModal');
